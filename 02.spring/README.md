@@ -13,7 +13,7 @@
 일반 Java Project로 생성하거나 Springframework 프로젝트를 사용 할 수 있습니다.       
 (Spring Framework를 이용하는 경우 Spring Data MongoDB를 선택 할 수 있습니다.)
 
-<img src="/01.SpringBoot/images/image02.png" width="90%" height="90%">   
+<img src="/02.spring/images/image02.png" width="90%" height="90%">   
 
 SpringBoot에서 MongoDB를 이용한 개발 방법은 4 가지로 구분이 가능 합니다.
 
