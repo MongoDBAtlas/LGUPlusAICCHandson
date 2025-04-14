@@ -30,16 +30,16 @@ MongoDB atlas Mongosh 접근 주소를 얻어야 합니다.
 접속 주소를 얻기 위해 Console에 로그인합니다. 
 데이터베이스 클러스터의 Connect 버튼을 클릭 합니다.
 
-<img src="/01.CRUD and MQL/images/image01.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image01.png" width="90%" height="90%">     
 
 
 접근방법을 선택 하여 주는 단계에서 Shell을 선택 하면 접근 주소를 얻을 수 있습니다.   
 
-<img src="/01.CRUD and MQL/images/image20.png" width="60%" height="60%">   
+<img src="/01.aggregation/images/image20.png" width="60%" height="60%">   
 
 Mongosh이 설치 되어 있음으로 I have the MongoDB Shell installed를 선택하고 계정 접근은 암호로 접근할 것임으로 Password를 선택하면 접근 할 수 있는 주소를 얻을 수 있습니다.    
 
-<img src="/01.CRUD and MQL/images/image21.png" width="70%" height="70%">     
+<img src="/01.aggregation/images/image21.png" width="70%" height="70%">     
 
 
 Terminal을 열고 해당 주소를 이용하여 mongosh를 실행 하여 줍니다. (접근하기 위한 Account로 입력 하여 줍니다.)
@@ -392,26 +392,26 @@ MongoDB atlas Console에 접근 주소를 얻어야 합니다.
 접속 주소를 얻기 위해 Console에 로그인합니다.    
 데이터베이스 클러스터의 Connect 버튼을 클릭 합니다.
 
-<img src="/01.CRUD and MQL/images/image01.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image01.png" width="90%" height="90%">     
 
 접근방법을 선택 하여 주는 단계에서 Connect using MongoDB Compass를 선택 하면 접근 주소를 얻을 수 있습니다.    
 
-<img src="/01.CRUD and MQL/images/image02.png" width="60%" height="60%">     
+<img src="/01.aggregation/images/image02.png" width="60%" height="60%">     
 
 Connection String을 복사하여 줍니다. 이후 Compass를 실행 하여 줍니다.     
-<img src="/01.CRUD and MQL/images/image03.png" width="70%" height="70%">     
+<img src="/01.aggregation/images/image03.png" width="70%" height="70%">     
 
 
 
 복사한 Connection String을 입력하여 줍니다.   
 
-<img src="/01.CRUD and MQL/images/image04.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image04.png" width="90%" height="90%">     
 
 
 #### 데이터 조회
 데이터베이스에서 생성한 handson 탭을 클릭 하면 컬렉션 리스트를 볼 수 있습니다. 생성한 user컬렉션을 선택 합니다.    
 
-<img src="/01.CRUD and MQL/images/image05.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image05.png" width="90%" height="90%">     
 
 데이터 검색을 위해서 Filter 부분에 검색 조건을 입력 하여 줍니다.
 ssn 이 123-456-0001 인 데이터를 찾기 위해 다음과 같이 입력 하여 줍니다.
@@ -420,7 +420,7 @@ ssn 이 123-456-0001 인 데이터를 찾기 위해 다음과 같이 입력 하�
 {ssn: "123-456-0001"}
 ````
 
-<img src="/01.CRUD and MQL/images/image06.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image06.png" width="90%" height="90%">     
 
 나이(age)가 10 이상 40이하인 사람을 찾기를 합니다. 조건은 age >= 10 이고 age <=40으로 합니다.
 
@@ -428,7 +428,7 @@ ssn 이 123-456-0001 인 데이터를 찾기 위해 다음과 같이 입력 하�
 {age: {$gte: 10, $lte: 40}}
 ````
 
-<img src="/01.CRUD and MQL/images/image07.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image07.png" width="90%" height="90%">     
 
 
 
@@ -454,49 +454,49 @@ ssn 이 123-456-0001 인 데이터를 찾기 위해 다음과 같이 입력 하�
 ````
 db.movies.find({year:1987})
 ````
-<img src="/01.CRUD and MQL/images/image11.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image11.png" width="90%" height="90%">     
 
 - 장르가 Comedy 에 속하는 영화 검색
 ````
 db.movies.find({genres: "Comedy"})
 
 ````
-<img src="/01.CRUD and MQL/images/image12.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image12.png" width="90%" height="90%">     
 
 - 장르가 Comedy 하나 만 있는 데이터 검색
 ````
 db.movies.find({genres:["Comedy"]})
 
 ````
-<img src="/01.CRUD and MQL/images/image13.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image13.png" width="90%" height="90%">     
 
 - 장르가 Comedy 혹은 Drama 인 데이터 검색
 ````
 db.movies.find({genres:{$in:["Comedy", "Drama"]}})
 
 ````
-<img src="/01.CRUD and MQL/images/image14.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image14.png" width="90%" height="90%">     
 
 - imdb 의 평가 점수가 8.0 이상이고 등급이 PG 인 영화 검색
 ````
 db.movies.find({"imdb.rating" : {$gt: 8.0}, rated:"PG"})
 
 ````
-<img src="/01.CRUD and MQL/images/image15.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image15.png" width="90%" height="90%">     
 
 - metacritic의 평점이 존재 하는 영화 검색
 ````
 db.movies.find({metacritic: {$exists: true}})
 
 ````
-<img src="/01.CRUD and MQL/images/image16.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image16.png" width="90%" height="90%">     
 
 - Dr. Strangelove 로 시작하는 영화 검색
 ````
 db.movies.find({title: {$regex: '^Dr. Strangelove'}})
 
 ````
-<img src="/01.CRUD and MQL/images/image17.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image17.png" width="90%" height="90%">     
 
 ### Aggregation
 
@@ -553,23 +553,23 @@ Compass 의 Aggregation에서 Stage를 생성 하여 줍니다.
 
 match stage 생성 하기   
 
-<img src="/01.CRUD and MQL/images/image25.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image25.png" width="90%" height="90%">     
 
 unwind stage 생성 하기    
 
-<img src="/01.CRUD and MQL/images/image26.png" width="90%" height="90%">    
+<img src="/01.aggregation/images/image26.png" width="90%" height="90%">    
 
 group stage 생성 하기    
 
-<img src="/01.CRUD and MQL/images/image27.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image27.png" width="90%" height="90%">     
 
 out stage 생성 하기    
 
-<img src="/01.CRUD and MQL/images/image28.png" width="90%" height="90%">     
+<img src="/01.aggregation/images/image28.png" width="90%" height="90%">     
 
 생성된 컬렉션을 확인 합니다. out은 컬렉션을 생성하고 데이터를 생성 하여 줌으로 다시 aggregation을 실행 하기 위해서는 생성된 컬렉션을 삭제하고 실행 해줍니다. (실행 후 작성한 aggregation을 저장하여 줍니다.)
 
-<img src="/01.CRUD and MQL/images/image29.png" width="100%" height="100%">     
+<img src="/01.aggregation/images/image29.png" width="100%" height="100%">     
 
 
 ### Lookup
@@ -639,7 +639,7 @@ Lookup
 }
 ````
 
-<img src="/01.CRUD and MQL/images/image32.png" width="80%" height="80%">     
+<img src="/01.aggregation/images/image32.png" width="80%" height="80%">     
 
 결과로 다음과 같이 Comments를 포함한 결과가 보여 집니다.
 
