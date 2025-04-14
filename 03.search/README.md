@@ -17,25 +17,25 @@ MongoDB Atlas Search를 이용하여 Data pipeline 구성 없이 Atlas에 저장
 #### full text index 생성
 Atlas console 에 로그인 후 데이터베이스 클러스터를 선택 후 Search를 클릭 합니다.   
 M10이상은 인덱스 생성에 제한이 없으나 Free tier는 3개의 인덱스 까지 생성 가능 합니다.   
-<img src="/04.atlas-search/image/images01.png" width="70%" height="70%">    
+<img src="/03.search/image/images01.png" width="70%" height="70%">    
 
 인덱스 생성은 Json 으로 직접 입력 하거나 UI를 통해 생성 할 수 있습니다. Visual Editor 를 선택 합니다.
-<img src="/04.atlas-search/image/images02.png" width="70%" height="70%">    
+<img src="/03.search/image/images02.png" width="70%" height="70%">    
 
 컬렉션은 sample_mflix.movies 를 선택 하고 인덱스 이름은 default로 합니다.
-<img src="/04.atlas-search/image/images03.png" width="70%" height="70%">  
+<img src="/03.search/image/images03.png" width="70%" height="70%">  
 
 Analyzer 등은 기본 설정인 standard로 선택 하며 Dynamic을 기본값인 On을 선택 합니다. (전체 기본값으로 하여 줍니다)   
-<img src="/04.atlas-search/image/images20.png" width="70%" height="70%">  
+<img src="/03.search/image/images20.png" width="70%" height="70%">  
 
 Create Search Index를 클릭 하여 인덱스를 생성하여 줍니다. 작업은 백그라운드에서 실행 되며 몇분 후에 완료 됩니다.
-<img src="/04.atlas-search/image/images04.png" width="70%" height="70%">    
+<img src="/03.search/image/images04.png" width="70%" height="70%">    
 
 
 #### 기본 Full text Search
 Atlas Console 의 Aggregation 항목을 선택 하고 검색 관련한 pipeline 을 다음과 같이 생성 하여 줍니다.
 
-<img src="/04.atlas-search/image/images05.png" width="70%" height="70%">    
+<img src="/03.search/image/images05.png" width="70%" height="70%">    
 
 검색을 위한 파이프라인을 구성 합니다. fullplot이라는 컬럼을 대상으로 crime을 검색 합니다.
 `````
@@ -62,11 +62,11 @@ Aggregate에서 $search stage로 추가한 경우 $search를 입력할 필요가
       }
 `````
 
-<img src="/04.atlas-search/image/images06.png" width="70%" height="70%">    
+<img src="/03.search/image/images06.png" width="70%" height="70%">    
 
 쿼리가 실행 되어 결과가 보여 지게 됩니다. 해당 필드에 해당 검색어로 검색한 결과로 보여 집니다.
 
-<img src="/04.atlas-search/image/images07.png" width="70%" height="70%">    
+<img src="/03.search/image/images07.png" width="70%" height="70%">    
 
 ### Application
 Python을 설치 한 후 application 폴더에 Flask project를 다운로드 후 config.py 에 MongoDB를 접근하기 위한 Connection String을 입력 합니다.    
@@ -99,7 +99,7 @@ $ pip3 install flask
 
 애플리케이션에 접속 합니다.  (http://localhost:5010/)   
 
-<img src="/04.atlas-search/image/images08.png" width="80%" height="80%">    
+<img src="/03.search/image/images08.png" width="80%" height="80%">    
 
 
 #### 일반 텍스트 검색
@@ -111,7 +111,7 @@ Server.py 의 20 라인에 다음을 확인 합니다.
 queries 폴더에 query01.json을 이용한 텍스트 검색으로 movies 컬렉션에 title 컬럼에서 갬색을 진행 합니다. 결과는 3개 항목 만을 기준으로 하며 검색 Score를 함께 보여 줍니다.    
 
 다음은 "crime"으로 검색한 결과 입니다. (한단어로 검색 하기)       
-<img src="/04.atlas-search/image/images09.png" width="70%" height="70%">    
+<img src="/03.search/image/images09.png" width="70%" height="70%">    
 
 사용한 Query는 다음과 같습니다. (queries/query01.json)  
 path 가 "title" 이며 검색 단어(!!queryParameter!!)를 받아 검색을 진행 합니다.     
@@ -154,7 +154,7 @@ path 가 "title" 이며 검색 단어(!!queryParameter!!)를 받아 검색을 �
 
 fullplot 항목에서 입력한 키워드로 검색한 합니다. (total recall 로 검색한 결과) 결과는 전체 검색 결과를 리턴 합니다.    
 스페이스 구분된 두개의 단어("total","recall")가 각각 검색이 되어 나온 것을 확인 할 수 있습니다. (검색 결과가 10개로 total과 recall을 모두 포함하는 영화가 높은 스코어로 상위에 나오지며 하위에 Grindhouse 등 한단어만 포함하는 영화가 나오는 것을 확인 할 수 있습니다.)    
-<img src="/04.atlas-search/image/images21.png" width="80%" height="80%">    
+<img src="/03.search/image/images21.png" width="80%" height="80%">    
 
 사용한 Query는 다음과 같습니다. (queries/query02.json)  
 path 가 "title","fullplot","plot" 이며 검색 단어(!!queryParameter!!)를 받아 검색을 진행 합니다.     
@@ -194,7 +194,7 @@ total recall로 검색을 하면 total과 recall 으로 검색 한 결과가 보
 `````
     with open("queries/query06.json", "r", encoding = 'utf-8') as query_file:
 `````
-<img src="/04.atlas-search/image/images22.png" width="80%" height="80%">    
+<img src="/03.search/image/images22.png" width="80%" height="80%">    
 
 사용한 Query는 다음과 같습니다. (queries/query06.json)  
 path 가 "title","fullplot","plot" 이나 검색이 "phrase"로 검색 단어(!!queryParameter!!)가 포함된 영화를 검색 합니다.     
@@ -235,7 +235,7 @@ path 가 "title","fullplot","plot" 이나 검색이 "phrase"로 검색 단어(!!
 `````
     with open("queries/query09.json", "r", encoding = 'utf-8') as query_file:
 `````
-<img src="/04.atlas-search/image/images12.png" width="50%" height="50%">    
+<img src="/03.search/image/images12.png" width="50%" height="50%">    
 
 사용한 Query는 다음과 같습니다. (queries/query09.json)  
 path 가 "title"로 입력한 단어를 검색 하며 fuzzy 설정에 따라 1개의 오타를 허용 하여 검색 합니다.     
@@ -293,7 +293,7 @@ path 가 "title"로 입력한 단어를 검색 하며 fuzzy 설정에 따라 1�
   }
 }
 `````
-<img src="/04.atlas-search/image/images13.png" width="50%" height="50%">
+<img src="/03.search/image/images13.png" width="50%" height="50%">
 
 index.html 파일에 다음 내용을 수정 하여 줍니다. (212 라인) 기존 function() {} 을 findMovieTitles() 로 변경 합니다.   
 
@@ -309,7 +309,7 @@ $('#custom-search-input .typeahead').typeahead({
 `````
 검색어로 scar 를 입력 하면 scar를 포함한 추천 검색어가 보여 집니다.
 
-<img src="/04.atlas-search/image/images14.png" width="50%" height="50%">
+<img src="/03.search/image/images14.png" width="50%" height="50%">
 
 
 ### Aggregate
@@ -520,12 +520,12 @@ path 가 "title"로 입력한 단어를 검색 하며 fuzzy 설정에 따라 1�
 
 sample_mflix.embedded_movies 컬렉션의 데이터로 plot_embedding 필드에 "ada-002-text" 서비스에 의해 plot 정보가 vector로 계산되어져 저장된 것입니다.    
 
-<img src="/04.atlas-search/image/images30.png" width="50%" height="50%">
+<img src="/03.search/image/images30.png" width="50%" height="50%">
 
 해당 필드에 인덱스를 생성 하여 줍니다. Vector 의 차원은 1536이며 비교 연산은 euclidean을 사용 합니다.  
 Atlas console에서 인덱스를 생성 하여 줍니다. 인덱스는 UI를 통해서 생성이 지원되지 않음으로 JSON을 이용한 생성을 선택 합니다.   
 
-<img src="/04.atlas-search/image/images40.png" width="50%" height="50%">
+<img src="/03.search/image/images40.png" width="50%" height="50%">
 
 
 인덱스 이름을 vector_index로 지정 하고 plot_embedding 필드에 인덱스를 생성하며 type은 knnVector로 지정하고 차원 정보는 1536, 유사도는 euclidean을 입력 하여 줍니다. 장르 정보를 지정하여 검색 하기 위해 genres도 추가 하여 줍니다.     
@@ -549,13 +549,13 @@ Atlas console에서 인덱스를 생성 하여 줍니다. 인덱스는 UI를 통
 
 인덱스 생성 까지는 1-2분 정도가 소요되며 생성 완료는 search index 페이지에서 확인 가능 합니다.    
 
-<img src="/04.atlas-search/image/images41.png" width="70%" height="70%">
+<img src="/03.search/image/images41.png" width="70%" height="70%">
 
 
 검색을 위해서 openAI (https://openai.com/ )에 무료 회원 가입 후 회원 정보 페이지에서 API 사용을 위한 API key를 생성 합니다.   
 
 
-<img src="/04.atlas-search/image/images32.png" width="70%" height="70%">
+<img src="/03.search/image/images32.png" width="70%" height="70%">
 
 생성된 API 키는 다시 조회가 불가능 함으로 메모 하여 둡니다. 
 
