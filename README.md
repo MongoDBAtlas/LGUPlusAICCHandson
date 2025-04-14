@@ -17,7 +17,6 @@
    - Handson [GitHub][1]
 
 4. **Spring**
-   - MongoDB & Spring
    - Handson [GitHub][2]
 
 4. **Search**
@@ -33,4 +32,3 @@
 [2]: https://github.com/MongoDBAtlas//LGUPlusHandson/tree/main/02.spring
 [3]: https://github.com/MongoDBAtlas//LGUPlusHandson/tree/main/03.search
 
->>>>>>> origin/main
