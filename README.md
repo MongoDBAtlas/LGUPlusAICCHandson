@@ -27,8 +27,8 @@
 5. **Migration**
    - Migration tools
 
-[0]: https://github.com/MongoDBAtlas//LGUPlusHandson/tree/main/00.pre-work
-[1]: https://github.com/MongoDBAtlas//LGUPlusHandson/tree/main/01.aggregation
-[2]: https://github.com/MongoDBAtlas//LGUPlusHandson/tree/main/02.spring
-[3]: https://github.com/MongoDBAtlas//LGUPlusHandson/tree/main/03.search
+[0]: https://github.com/MongoDBAtlas/LGUPlusAICCHandson/tree/main/00.pre-work
+[1]: https://github.com/MongoDBAtlas/LGUPlusAICCHandson/tree/main/01.aggregation
+[2]: https://github.com/MongoDBAtlas/LGUPlusAICCHandson/tree/main/02.spring
+[3]: https://github.com/MongoDBAtlas/LGUPlusAICCHandson/tree/main/03.search
 
