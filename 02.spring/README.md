@@ -9,6 +9,8 @@
 ### [&rarr; Spring Data](#Repository)
 <br>
 
+Atlas 콘솔에서 sample data를 load합니다. 
+
 ### Project
 일반 Java Project로 생성하거나 Springframework 프로젝트를 사용 할 수 있습니다.       
 (Spring Framework를 이용하는 경우 Spring Data MongoDB를 선택 할 수 있습니다.)
@@ -144,6 +146,14 @@ Update 처리
   System.out.println("Update Result : "+ rs);
 
 ````
+
+Atlas console에서 java driver에 대한 connection string을 확인 후 아래 커맨드 내 파라미터를 수정하고 실행합니다. 
+
+```
+mvn compile exec:java \                                                                         
+-Dexec.mainClass="com.example.Read" \
+-Dmongodb.uri="<cluster connection string>"
+```
 
 [SpringFramework MongoTemplate][1]
 
