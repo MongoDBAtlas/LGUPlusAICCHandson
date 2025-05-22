@@ -28,13 +28,59 @@ MongoDB Driver만을 사용하여 개발이 단순한 장점이 있으나 Spring
 Dependency를 POM에 추가 하여 줍니다.  
 
 ```` pom.xml
-		<dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-sync</artifactId>
-    </dependency>
+	<dependency>
+	      <groupId>org.mongodb</groupId>
+	      <artifactId>mongodb-driver-sync</artifactId>
+    	</dependency>
 ````
 
 MongoClient를 생성 하여 Connection 한 후 Database, Collection을 선택 한 후 쿼리를 진행 합니다.
+
+```
+package com.mongodb.demo;
+
+import com.mongodb.client.*;
+import org.bson.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Projections.*;
+import static com.mongodb.client.model.Sorts.descending;
+
+public class Read {
+
+    public static void main(String[] args) {
+        try (MongoClient mongoClient = MongoClients.create(System.getProperty("mongodb.uri"))) {
+            MongoDatabase sampleTrainingDB = mongoClient.getDatabase("sample_training");
+            MongoCollection<Document> gradesCollection = sampleTrainingDB.getCollection("grades");
+
+
+            // find a list of documents and use a List object instead of an iterator
+            List<Document> studentList = gradesCollection.find(gte("student_id", 100)).limit(2).into(new ArrayList<>());
+            System.out.println("1. Student list with an ArrayList:");
+            for (Document student : studentList) {
+                System.out.println(student.toJson());
+            }
+
+
+            // find a list of documents with sort, skip, limit and projection
+            List<Document> docs = gradesCollection.find(and(eq("student_id", 70), lte("class_id", 5)))
+                                                  .projection(fields(excludeId(), include("class_id", "student_id")))
+                                                  .sort(descending("class_id"))
+                                                  .limit(2)
+                                                  .into(new ArrayList<>());
+
+            System.out.println("2. Student sorted, skipped, limited and projected:");
+            for (Document student : docs) {
+                System.out.println(student.toJson());
+            }
+        }
+    }
+}
+
+```
 
 [SpringFramework MongoDB Driver][0]
 
