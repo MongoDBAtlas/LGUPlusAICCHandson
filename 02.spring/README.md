@@ -81,22 +81,14 @@ public class Read {
 ```
 
 
+### Repository
 
-### MongoTemplates
-Spring Framework이 제공하는 Mongo Templates를 이용하여 개발을 진행할 수 있습니다. 
-Repository가 제공하는 기본 CRUD 등을 사용하지 않기 때문에 직접 코드 구현이 필요합니다.
+Spring Framework이 제공하는 Respository를 사용하는 것으로, 기본 CRUD외에 필요한 메서드를 repository interface에 작성하고 implementation에 구현해야 합니다. 
+
 
 [Spring initializr][0]를 다운받아 프로젝트를 생성합니다.
 <img src="/02.spring/images/image02.png" width="90%" height="90%">   
 
-Dependency를 추가 하여 줍니다.
-
-```` pom.xml		
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-````
 
 또한 application.properties 에 Atlas 접근 정보를 추가합니다.
 
@@ -109,16 +101,7 @@ spring.data.mongodb.database=<<database>>
 
 Model 디렉토리 내 [GroceryItem.java][1]를 작성합니다. 
 
-`CommandLineRunner`로 애플리케이션을 실행해보겠습니다. 
 
-```
-./mvnw spring-boot:run
-```
-
-
-### Repository
-
-Spring Framework이 제공하는 Respository를 사용하는 것으로, 기본 CRUD외에 필요한 메서드를 repository interface에 작성하고 implementation에 구현해야 합니다. 
 
 Repository 디렉토리 내에 [ItemRepository][2]를 생성해 MongoRepository interface를 extend한 ItemRepository interface를 생성합니다. 
 
@@ -250,6 +233,11 @@ public class MdbSpringBootApplication implements CommandLineRunner{
 }
 ```
 
+`CommandLineRunner`로 애플리케이션을 실행해보겠습니다. 
+
+```
+./mvnw spring-boot:run
+```
 
 [0]: https://start.spring.io/
 [1]: https://github.com/mongodb-developer/mongodb-springboot/blob/main/mdb-spring-boot/src/main/java/com/example/mdbspringboot/model/GroceryItem.java
