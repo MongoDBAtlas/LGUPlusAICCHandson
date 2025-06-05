@@ -71,7 +71,7 @@ Atlas atlas-gamf6g-shard-0 [primary] handson>
 다음 데이터 베이스 명령으로 데이터를 생성 합니다.
 
 ````
-db.user.insert(
+db.user.insertOne(
   {
         ssn:"123-456-0001", 
         email:"user@email.com", 
