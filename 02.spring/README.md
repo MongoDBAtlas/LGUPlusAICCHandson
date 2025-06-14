@@ -101,63 +101,18 @@ Dependency를 POM에 추가 하여 줍니다.
     </dependency>
 ````
 
-MongoClient를 생성 하여 Connection 한 후 Database, Collection을 선택 한 후 쿼리를 진행 합니다.
-MongoDB Java driver를 활용해 간단한 데이터 조회를 진행해보겠습니다.
-
-```
-package com.mongodb.demo;
-
-import com.mongodb.client.*;
-import org.bson.Document;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Projections.*;
-import static com.mongodb.client.model.Sorts.descending;
-
-public class Read {
-
-    public static void main(String[] args) {
-        try (MongoClient mongoClient = MongoClients.create(System.getProperty("mongodb.uri"))) {
-            MongoDatabase sampleTrainingDB = mongoClient.getDatabase("sample_training");
-            MongoCollection<Document> gradesCollection = sampleTrainingDB.getCollection("grades");
-
-
-            // find a list of documents and use a List object instead of an iterator
-            List<Document> studentList = gradesCollection.find(gte("student_id", 100)).limit(2).into(new ArrayList<>());
-            System.out.println("1. Student list with an ArrayList:");
-            for (Document student : studentList) {
-                System.out.println(student.toJson());
-            }
-
-
-            // find a list of documents with sort, skip, limit and projection
-            List<Document> docs = gradesCollection.find(and(eq("student_id", 70), lte("class_id", 5)))
-                                                  .projection(fields(excludeId(), include("class_id", "student_id")))
-                                                  .sort(descending("class_id"))
-                                                  .limit(2)
-                                                  .into(new ArrayList<>());
-
-            System.out.println("2. Student sorted, skipped, limited and projected:");
-            for (Document student : docs) {
-                System.out.println(student.toJson());
-            }
-        }
-    }
-}
-
-```
-
 
 ### Spring boot Project 생성
 
 Spring Framework이 제공하는 Respository를 사용하는 것으로, 기본 CRUD외에 필요한 메서드를 repository interface에 작성하고 implementation에 구현해야 합니다. 
 
 
-[Spring initializr][0]를 다운받아 프로젝트를 생성합니다.
-<img src="/02.spring/images/image03.png" width="90%" height="90%">   
+[Spring initializr]를 다운받아 프로젝트를 생성합니다.
+<img src="/02.spring/images/image03.png" width="80%" height="80%">   
+
+dependenciy에서 Spring Data MongoDB 및 Lombok을 추가 하여 줍니다.
+
+<img src="/02.spring/images/image07.png" width="80%" height="80%">   
 
 
 Dependency를 POM에 추가 하여 줍니다.  
@@ -181,7 +136,7 @@ spring.data.mongodb.database=handson
 사용할 데이터는 사용자 정보로 User 정보와 Address정보를 가지는 데이터를 사용 합니다.  
 데이터 구조는 다음과 같습니다.  
 
-<img src="/02.spring/images/image04.png" width="90%" height="90%">   
+<img src="/02.spring/images/image04.png" width="70%" height="70%">   
 
 Java Class를 추가 하여 줍니다.   
 [User, Address] Class를 추가 하여 줍니다. 
@@ -192,11 +147,11 @@ MongoDB와 연결을 위한 연결정보를 생성하는 MongoConfig 클래스�
 
 프로젝트 구조는 다음과 같습니다.   
 
-<img src="/02.spring/images/image05.png" width="90%" height="90%">   
+<img src="/02.spring/images/image05.png" width="60%" height="60%">   
 
-Repository가 제공하지 못하는 (Update) Query를 MongoTemplate를 이용하여 처리 합니다. 이를 위해 CustomUserRepository interface를 생성 하여 줍니다. 
+Repository가 제공하지 못하는 (Update) Query를 MongoTemplate를 이용하여 처리 합니다. 이를 위해 CustomUserRepository interface를 생성 하여 줍니다.    
 ssn을 이용하여 필터링 하고 주소 정보에 대한 타입으로 수정할 주소를 선택 하여 postalCode(우편번호)를 수정 하여 줍니다.  
-where ssn={ssn} and Address.type={type}으로 수정할 데이터를 필터링 합니다.  
+where ssn={ssn} and Address.type={type}으로 수정할 데이터를 필터링 합니다.   
 
 ````
 public interface CustomUserRepository {
@@ -265,7 +220,7 @@ where ssn={ssn} 과 where ssn={ssn} and age >{age} 를 추가 합니다.
 클래스 구조는 다음과 같습니다.  
 
 
-<img src="/02.spring/images/image06.png" width="90%" height="90%">   
+<img src="/02.spring/images/image06.png" width="60%" height="60%">   
 
 
 테스트는 간단히 AiccRepositoryApplication 클래스에 테스트를 위한 코드를 추가 하여 줍니다.
