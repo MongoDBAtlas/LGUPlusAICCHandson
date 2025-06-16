@@ -746,7 +746,7 @@ db.artists.insertMany([
 ]);
 ````
 
-태어난 년도를 기준으로 하여 집계를 위해서 bucket을 이용하여 groupBy 항목으로 year_born을 하여 줍니다. 태어난 년도의 집계는 10년을 기준으로 category화는 boundaries레 작성 기준을 작성하여 줍니다. 
+태어난 년도를 기준으로 하여 집계를 위해서 bucket을 이용하여 groupBy 항목으로 year_born을 하여 줍니다. 태어난 년도의 집계는 10년을 기준으로 category화는 boundaries에 작성 기준을 작성하여 줍니다. 
 
 ````
 db.artists.aggregate( [
@@ -851,6 +851,7 @@ db.clothing.aggregate( [
    { $unwind: { path: "$sizes", preserveNullAndEmptyArrays: true } }
 ] );
 
+
 {
   _id: 1,
   item: 'Shirt',
@@ -884,6 +885,10 @@ db.clothing.aggregate( [
   item: 'Scarf',
   sizes: null
 }
+
+db.clothing.aggregate( [
+   { $unwind: { path: "$sizes" } }
+] );
 ````
 
 
