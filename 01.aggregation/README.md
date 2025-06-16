@@ -227,9 +227,7 @@ Atlas atlas-gamf6g-shard-0 [primary] handson>
 `````
 db.user.updateOne(
   {"ssn":"123-456-0001"},
-   [
-      { $set: { email: "gildong@email.com" } }
-   ]
+  { $set: { email: "gildong@email.com" } }
 );
 
 {
