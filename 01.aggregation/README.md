@@ -477,7 +477,7 @@ db.movies.find({genres:{$in:["Comedy", "Drama"]}})
 ````
 <img src="/01.aggregation/images/image14.png" width="90%" height="90%">     
 
-- imdb 의 평가 점수가 8.0 이상이고 등급이 PG 인 영화 검색
+- imdb 의 평가 점수가 8.0 이상이고, rated 필드 값이 존재할 시 해당 필드 값이 PG 인 영화 검색
 ````
 db.movies.find({"imdb.rating" : {$gt: 8.0}, rated:"PG"})
 
@@ -732,70 +732,6 @@ db.users.aggregate(
 
 
 
-### option
-#### Aggregation Group 
-다음과 같은 과일 판매 데이터가 있을 때 일자별로 판매된 과일과 총 판매 금액을 계산 합니다.
-
-````
-db.sales.insertMany([
-{ "_id" : 1, "item" : "apple", "price" : 10, "quantity" : 2, "date" : ISODate("2023-01-01T08:00:00Z") },
-{ "_id" : 2, "item" : "grape", "price" : 20, "quantity" : 1, "date" : ISODate("2023-02-03T09:00:00Z") },
-{ "_id" : 3, "item" : "melon", "price" : 5, "quantity" : 5, "date" : ISODate("2023-02-03T09:05:00Z") },
-{ "_id" : 4, "item" : "apple", "price" : 10, "quantity" : 10, "date" : ISODate("2023-02-15T08:00:00Z") },
-{ "_id" : 5, "item" : "melon", "price" : 5, "quantity" : 10, "date" : ISODate("2023-02-15T09:12:00Z") }
-])
-
-````
-
-일자 데이터를 기준으로 그룹을 생성하고 accumulation 으로 addToSet, sum 을 이용합니다.
-
-````
-db.sales.aggregate(
-   [
-     {
-       $group:
-         {
-           _id: { day: { $dayOfYear: "$date"}, year: { $year: "$date" } },
-           itemsSold: { $addToSet: "$item" },
-           total: {$sum: "$quantity"}
-         }
-     }
-   ]
-);
-
-{
-  _id: {
-    day: 34,
-    year: 2023
-  },
-  itemsSold: [
-    'grape',
-    'melon'
-  ],
-  total_price: 25
-}
-{
-  _id: {
-    day: 46,
-    year: 2023
-  },
-  itemsSold: [
-    'melon',
-    'apple'
-  ],
-  total_price: 15
-}
-{
-  _id: {
-    day: 1,
-    year: 2023
-  },
-  itemsSold: [
-    'apple'
-  ],
-  total_price: 10
-}
-````
 #### Aggregation Bucket
 화가의 프로파일 정보에서 태어난 년도를 기준으로 하여 그룹을 생성 합니다. 년도는 10년을 기준으로 집계 합니다. 즉 1840 ~1850 년으로 집계 합니다.
 
@@ -957,6 +893,12 @@ db.clothing.aggregate( [
 sample_airbnb.listingsAndReviews 컬렉션에는 숙박 시설 정보를 가진 문서이며 해당 숙박시설의 지리 정보가 좌표로 입력 되어 있습니다. (address.location)  마드리드 공항을 기준으로 가장 가까운 숙박 시설을 검색 합니다.  마드리드 공항의 좌표 정보는 -3.56744, 40.49845 이며 검색하려는 숙박 시설을 Hotel 과 Apartments 입니다. 보는 데이터는 숙박 시설의 이름과 주소, 떨어진 거리, 금액으로 합니다. (name, property_type, summary, address, price)
 
 검색은 geoNear 스테이지를 이용하여 검색 하며 전체 데이터중 보고자 하는 필드만을 제한 하기 위해 project 스테이지를 사용 합니다.
+먼저 데이터베이스를 선택하여야 합니다.
+````
+Atlas atlas-gamf6g-shard-0 [primary] MMT> use sample_airbnb
+switched to db sample_airbnb
+Atlas atlas-gamf6g-shard-0 [primary] sample_airbnb>
+````
 
 
 ````
