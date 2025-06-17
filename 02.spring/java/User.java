@@ -26,7 +26,17 @@ public class User {
   	
   	private List<String> hobbies;
   	private List<Address> addresses;
+
+	@Field("data")
+    	private HashMap<String, Object> data;
   	
+	public HashMap<String, Object> getData() {
+		return data;
+	}
+	public void setData(HashMap<String, Object> data) {
+		this.data = data;
+	}
+	
   	private String DateOfBirth;
   	
   	
