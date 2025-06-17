@@ -251,6 +251,10 @@ where ssn={ssn} 과 where ssn={ssn} and age >{age} 를 추가 합니다.
 			Address.add(new Address("home","서울시 강남구 역삼동","역삼 한국 아파트 101동 101호","06320"));
 			
 			user.setAddresses(Address);
+			HashMap<String, Object> data = new HashMap<>(); 
+			data.put("job", "developer");
+			data.put("knowledge", "mongodb");
+			user.setData(data);
 			
 			userRepository.deleteAll();
 			
