@@ -5,8 +5,6 @@
 
 <br>
 
-Atlas 콘솔에서 sample data 중 sample_training 데이터를 load합니다. 
-
 ### Local Atlas 환경 구축
 Atlas CLI 및 Docker를 설치하여 로컬에 개발 환경을 구축 합니다.   
 
@@ -72,6 +70,14 @@ CONTAINER ID   IMAGE                             COMMAND                  CREATE
 mongodb://127.0.0.1:32771
 ````
 mongosh로 연결 테스트를 진행 할 수 있습니다.    
+(참고 Atlas CLI로 배포한 MongoDB의 경우 주소 mapping이 127.0.0.1로 되어 있습니다. 따라서 MongoDB접근은 localhost에서만 가능 합니다.)    
+
+Atlas CLI를 이용하지 않고 Docker로 직접 배포 하기   
+````
+$ docker pull mongodb/mongodb-atlas-local:latest
+$ docker run -d --name atlas-local -p 27017:27017 mongodb/mongodb-atlas-local
+````
+이 경우 주소가 0.0.0.0:27017->27017/tcp 인 것을 확인 할 수 있습니다. 따라서 인스턴스의 IP주소로 접근이 가능 합니다.   
 
 
 ### Spring boot
@@ -157,6 +163,7 @@ where ssn={ssn} and Address.type={type}으로 수정할 데이터를 필터링 �
 public interface CustomUserRepository {
 
 	UpdateResult updateAddress(String ssn, String type, String postalCode);
+	UpdateResult pushAddress(String ssn, Address address);
 
 }
 ````
@@ -169,7 +176,11 @@ public class CustomUserRepositoryImpl implements CustomUserRepository{
 
 	@Override
 	public UpdateResult updateAddress(String ssn, String type, String postalCode) {
-		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UpdateResult pushAddress(String ssn, Address address) {
 		return null;
 	}
 
@@ -196,6 +207,19 @@ public class CustomUserRepositoryImpl implements CustomUserRepository{
 		
 		return rs;
 	}
+
+	@Override
+	public UpdateResult pushAddress(String ssn, Address address) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("ssn").is(ssn));
+		
+		Update update = new Update();
+		update.push("addresses", address);
+		
+		UpdateResult rs = mongoTemplate.updateFirst(query, update, User.class);
+		
+		return rs;
+	}
 ````
 
 사용자의 데이터를 처리할 UserRepository Interface를 생성 합니다.
@@ -215,6 +239,31 @@ where ssn={ssn} 과 where ssn={ssn} and age >{age} 를 추가 합니다.
 	
 	@Query("{'ssn': ?0, 'age': {$gt:?1}}")
 	List<User> findUserWithAge(String ssn, int age);
+	
+	@Query("{$or : [{'ssn': ?0}, {'age':{$gte:?1}}] }")
+	List<User> findUserOrAge(String ssn, int age);
+	
+	@Query("{'ssn': ?0}")
+	@Update("{ '$set' : { 'age' : ?1 } }")
+	void updateAge(@Param("id") String ssn, @Param("age") int age);
+	
+	
+	@Query("{ssn:?0, 'addresses.type':?1}")
+	@Update("{$set:{'addresses.$.postcode': ?2}}")
+	void updateAddressBySSN(String ssn, String type, String postal);
+	
+	@Query(value= "{ssn: ?0}",delete = true)
+	void deleteBySSN(String ssn);
+	
+	
+	@Query("{ssn:?0}")
+	@Update("{$pull:{addresses:{type:?1}}}")
+	void pullAddress(String ssn, String type);
+	
+	@Query("{ssn:?0}")
+	@Update("{$pull:{addresses:{type:?1,postcode:?2}}}")
+	void pullAddressByTypPostCode(String ssn, String type,String postal);
+	
 ````
 
 클래스 구조는 다음과 같습니다.  
@@ -249,11 +298,14 @@ where ssn={ssn} 과 where ssn={ssn} and age >{age} 를 추가 합니다.
 			
 			Address.add(new Address("office","서울시 강남구 삼성동","코엑스 6","06132"));
 			Address.add(new Address("home","서울시 강남구 역삼동","역삼 한국 아파트 101동 101호","06320"));
+			Address.add(new Address("work","서울시 강남구 삼성동","아셈타워","06320"));
 			
 			user.setAddresses(Address);
+			
 			HashMap<String, Object> data = new HashMap<>(); 
 			data.put("job", "developer");
 			data.put("knowledge", "mongodb");
+			data.put("company", "LGU Plus");
 			user.setData(data);
 			
 			userRepository.deleteAll();
@@ -262,6 +314,7 @@ where ssn={ssn} 과 where ssn={ssn} and age >{age} 를 추가 합니다.
 						
 			List<User> ssnRs = userRepository.findByssn("123-456-7890");
 			
+			System.out.println("Find By ssn(123-456-7890):");
 			for (int i=0;i<ssnRs.size();i++)
 			{
 				System.out.println(ssnRs.get(i));
@@ -269,13 +322,36 @@ where ssn={ssn} 과 where ssn={ssn} and age >{age} 를 추가 합니다.
 			
 
 			List<User> ageRs = userRepository.findUserWithAge("123-456-7890",40);
-			
+			System.out.println("Find By ssn(123-456-7890) and age(40):");
+		
 			for (int i=0;i<ageRs.size();i++)
 			{
 				System.out.println(ageRs.get(i));
 			}
+			
+			List<User> ageRs2 = userRepository.findUserOrAge("123-456-7890", 30);
+			System.out.println("Find By ssn(123-456-7890) Or age(30):");
+			
+			for (int i=0;i<ageRs2.size();i++)
+			{
+				System.out.println(ageRs2.get(i));
+			}
 
+			System.out.println("Update postcode(0000) by ssn(123-456-7890) and type is office:");
 			userRepository.updateAddress("123-456-7890", "office", "0000");
+			
+			System.out.println("Update age(50) by ssn(123-456-7890):");
+			userRepository.updateAge("123-456-7890",50);
+			
+			System.out.println("Pull home from Addresses by ssn(123-456-7890):");
+			userRepository.pullAddress("123-456-7890", "home");
+			userRepository.pullAddressByTypPostCode("123-456-7890", "work", "06320");
+			//userRepository.deleteBySSN("123-456-7890");
+			
+			//userRepository.pushAddress(null, null)
+			
+			System.out.println("Push new Addresses by ssn(123-456-7890):");
+			userRepository.pushAddress("123-456-7890", new Address("office","서울시 강남구 삼성동","코엑스 6","06132"));
 		};
 	}
 ````
@@ -284,8 +360,16 @@ where ssn={ssn} 과 where ssn={ssn} and age >{age} 를 추가 합니다.
 
 결과는 다음과 같습니다.
 ````
-User [id=684da70a407037e25b1387b4, ssn=123-456-7890, name=Gildong Hong, age=50, email=gildong.hong@email.com, hobbies=[Martial arts], addresses=[Address(type=office, address=서울시 강남구 삼성동, detail=코엑스 6, postcode=06132), Address(type=home, address=서울시 강남구 역삼동, detail=역삼 한국 아파트 101동 101호, postcode=06320)], DateOfBirth=Jan. 1st]
-User [id=684da70a407037e25b1387b4, ssn=123-456-7890, name=Gildong Hong, age=50, email=gildong.hong@email.com, hobbies=[Martial arts], addresses=[Address(type=office, address=서울시 강남구 삼성동, detail=코엑스 6, postcode=06132), Address(type=home, address=서울시 강남구 역삼동, detail=역삼 한국 아파트 101동 101호, postcode=06320)], DateOfBirth=Jan. 1st]
+Find By ssn(123-456-7890):
+User [id=68510eab90cdd39cc9fc2e61, ssn=123-456-7890, name=Gildong Hong, age=50, email=gildong.hong@email.com, hobbies=[Martial arts], addresses=[com.mongodb.spring.lgu.model.Address@55c1ced9, com.mongodb.spring.lgu.model.Address@49cc9b2a, com.mongodb.spring.lgu.model.Address@11826398], DateOfBirth=Jan. 1st]
+Find By ssn(123-456-7890) and age(40):
+User [id=68510eab90cdd39cc9fc2e61, ssn=123-456-7890, name=Gildong Hong, age=50, email=gildong.hong@email.com, hobbies=[Martial arts], addresses=[com.mongodb.spring.lgu.model.Address@307af381, com.mongodb.spring.lgu.model.Address@1510b9a2, com.mongodb.spring.lgu.model.Address@76a6f045], DateOfBirth=Jan. 1st]
+Find By ssn(123-456-7890) Or age(30):
+User [id=68510eab90cdd39cc9fc2e61, ssn=123-456-7890, name=Gildong Hong, age=50, email=gildong.hong@email.com, hobbies=[Martial arts], addresses=[com.mongodb.spring.lgu.model.Address@633ddc0c, com.mongodb.spring.lgu.model.Address@4bcdd11, com.mongodb.spring.lgu.model.Address@1471b98d], DateOfBirth=Jan. 1st]
+Update postcode(0000) by ssn(123-456-7890) and type is office:
+Update age(50) by ssn(123-456-7890):
+Pull home from Addresses by ssn(123-456-7890):
+Push new Addresses by ssn(123-456-7890):
 ````
 
 
